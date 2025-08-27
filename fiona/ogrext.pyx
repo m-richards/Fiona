@@ -766,7 +766,10 @@ cdef class OGRFeatureBuilder:
                     setter = self.property_setter_cache[val_type]
                 else:
                     for cls in val_type.mro():
+                        
                         fieldkey = (*FIELD_TYPES_MAP2[NAMED_FIELD_TYPES[schema_type]], cls.__name__)
+                        # log.debug(f"class name {cls.__name__}, schema_type={schema_type}\n named field types={NAMED_FIELD_TYPES}\nftmap2={FIELD_TYPES_MAP2}, field_key={fieldkey}")
+                        log.debug(f"class name {cls.__name__}, schema_type={schema_type}, field_key={fieldkey}, val_type={val_type}")
                         try:
                             setter = self.OGRPropertySetter[fieldkey](driver=self.driver)
                         except KeyError:
@@ -1600,7 +1603,8 @@ cdef class WritingSession(Session):
 
         # Mapping of the Python collection schema to normalized field types
         self._schema_normalized_field_types = {k: normalize_field_type(v) for (k, v) in self.collection.schema['properties'].items()}
-
+        log.info(f"Schema mapping index is {self._schema_mapping_index}")
+        log.info(f"Schema _schema_normalized_field_types is {self._schema_normalized_field_types}")
         log.debug("Writing started")
 
     def writerecs(self, records, collection):
