@@ -9,14 +9,14 @@ logger = logging.getLogger(__name__)
 import fiona
 
 
-schema={'properties': {'Anode': 'int32', 'Bnode': 'int32', 'LinkID': 'float', }, 'geometry': 'LineString'}
+schema={'properties': {'Anode': 'int32', 'Bnode': 'int64'}, 'geometry': 'LineString'}
 
 crs = "EPSG:4326"
 
 coordinates = [(115.638812, -32.62857), (115.637933, -32.631091)]
 
 records = [fiona.Feature(geometry=fiona.Geometry(coordinates=coordinates, type='LineString'), id='23998', 
-                         properties=fiona.Properties(Anode=25194, Bnode=25196, LinkID=2519425196))]
+                         properties=fiona.Properties(Anode=25194, Bnode=2519425196))]
 
 
 with fiona.open(

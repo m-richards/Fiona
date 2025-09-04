@@ -763,7 +763,7 @@ cdef class OGRFeatureBuilder:
                 val_type = type(value)
 
                 if val_type in self.property_setter_cache:
-                    setter = self.property_setter_cache[val_type]
+                    setter = self.property_setter_cache[(val_type)]
                 else:
                     for cls in val_type.mro():
                         
