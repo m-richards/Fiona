@@ -99,7 +99,7 @@ def test_mixed_int_widths(tmpdir):
         )
 
     with fiona.open(str(tmpdir.join("test.shp"))) as src:
-        assert src.schema["properties"]["A"] == "int:9"
+        assert src.schema["properties"]["A"] == "int32:9"
         assert src.schema["properties"]["B"] == "int:18"
         first = next(iter(src))
         assert first["properties"]["A"] == 3
