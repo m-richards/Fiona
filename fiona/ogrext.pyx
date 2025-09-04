@@ -763,7 +763,7 @@ cdef class OGRFeatureBuilder:
                 val_type = type(value)
 
                 if val_type in self.property_setter_cache:
-                    setter = self.property_setter_cache[(val_type)]
+                    setter = self.property_setter_cache[(val_type, schema_type)]
                 else:
                     for cls in val_type.mro():
                         
@@ -775,7 +775,7 @@ cdef class OGRFeatureBuilder:
                         except KeyError:
                             continue
                         else:
-                            self.property_setter_cache[val_type] = setter
+                            self.property_setter_cache[(val_type, schema_type)] = setter
                             break
                     else:
                         log.warning("Skipping field because of invalid value: key=%r, value=%r", key, value)
