@@ -702,8 +702,9 @@ cdef class OGRFeatureBuilder:
         (OFTInteger64, OFSTNone, "int64"): Integer64Field,
         (OFTInteger64, OFSTNone, "float"): RealField,
         (OFTInteger64, OFSTNone, "str"): StringField,
+        (OFTReal, OFSTNone, "int"): RealField, # Recieved int val_type with float schema supports coercion
         (OFTReal, OFSTNone, "float"): RealField,
-        (OFTReal, OFSTNone, "str"): StringField,
+        (OFTReal, OFSTNone, "str"): StringField, # don't understand when this comes up?
         (OFTReal, OFSTFloat32, "float"): RealField,
         (OFTReal, OFSTFloat32, "float32"): RealField,
         (OFTReal, OFSTFloat32, "str"): StringField,
@@ -751,6 +752,9 @@ cdef class OGRFeatureBuilder:
 
         encoding = session._get_internal_encoding()
 
+        logging.debug(f"NTFs:\n{NAMED_FIELD_TYPES}")
+        logging.debug(f"FIELD_TYPES_MAP2:\n{FIELD_TYPES_MAP2}")
+
         for key, value in feature.properties.items():
             i = session._schema_mapping_index[key]
 
@@ -762,11 +766,14 @@ cdef class OGRFeatureBuilder:
             else:
                 schema_type = session._schema_normalized_field_types[key]
                 val_type = type(value)
+                logging.debug(f"Types are :{(val_type, schema_type)}")
+                
 
                 if val_type in self.property_setter_cache:
                     setter = self.property_setter_cache[(val_type, schema_type)]
                 else:
                     for cls in val_type.mro():
+                        logging.debug(f"Val type is {val_type}, Trying {schema_type} -> {NAMED_FIELD_TYPES[schema_type]} -> {FIELD_TYPES_MAP2[NAMED_FIELD_TYPES[schema_type]]} and {cls.__name__}")
                         fieldkey = (*FIELD_TYPES_MAP2[NAMED_FIELD_TYPES[schema_type]], cls.__name__)
                         try:
                             setter = self.OGRPropertySetter[fieldkey](driver=self.driver)
