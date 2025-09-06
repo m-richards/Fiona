@@ -446,7 +446,7 @@ def test_schema_string_list(tmp_path):
         }
 
 def test_schema_coercions(tmp_path):
-    output_file = tmp_path / "fio_test.geojson"
+    output_file = tmp_path / "fio_test.gpkg"
     schema = {
     "properties": {
         "int_to_schema_float": "float",
@@ -462,7 +462,7 @@ def test_schema_coercions(tmp_path):
     "geometry": "Point",
 }
     with fiona.open(
-        output_file, "w", driver="GeoJSON", schema=schema, crs="EPSG:4326"
+        output_file, "w", driver="GPKG", schema=schema, crs="EPSG:4326"
     ) as fds:
         fds.writerecords(
             [
@@ -490,9 +490,9 @@ def test_schema_coercions(tmp_path):
         "int_to_schema_float64": "float",
         "int_to_schema_float32": "float",
         "str_to_schema_int32": "int32",
-        "str_to_schema_int64": "int32",
+        "str_to_schema_int64": "int",
         "bool_to_schema_int32": "int32",
-        "bool_to_schema_int64": "int32",
+        "bool_to_schema_int64": "int",
         "bool_to_schema_float32": "float",
         "bool_to_schema_float64": "float",
     }

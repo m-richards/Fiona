@@ -704,7 +704,7 @@ cdef class OGRFeatureBuilder:
         (OFTInteger64, OFSTNone, "str"): StringField,
         (OFTReal, OFSTNone, "int"): RealField, # Recieved int val_type with float schema supports coercion
         (OFTReal, OFSTNone, "float"): RealField,
-        (OFTReal, OFSTNone, "str"): StringField, # don't understand when this comes up?
+        (OFTReal, OFSTNone, "str"): StringField,
         (OFTReal, OFSTFloat32, "float"): RealField,
         (OFTReal, OFSTFloat32, "float32"): RealField,
         (OFTReal, OFSTFloat32, "str"): StringField,
