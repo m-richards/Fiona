@@ -450,6 +450,7 @@ def test_schema_coercions(tmp_path):
     schema = {
     "properties": {
         "int_to_schema_float": "float",
+        "int_to_schema_str": "str",
         "int_to_schema_float64": "float",
         "int_to_schema_float32": "float",
         "str_to_schema_int32": "int32",
@@ -458,6 +459,7 @@ def test_schema_coercions(tmp_path):
         "bool_to_schema_int64": "int64",
         "bool_to_schema_float32": "float32",
         "bool_to_schema_float64": "float64",
+        "bool_to_schema_str": "str",
     },
     "geometry": "Point",
 }
@@ -471,6 +473,7 @@ def test_schema_coercions(tmp_path):
                     "geometry": {"type": "Point", "coordinates": [0.0, 0.0]},
                     "properties": {
                         "int_to_schema_float": 999_999_999_999,
+                        "int_to_schema_str": 999_999_999_999,
                         "int_to_schema_float64": 999_999_999_999,
                         "int_to_schema_float32": 999_999_999_999,
                         "str_to_schema_int32": "42",
@@ -479,6 +482,7 @@ def test_schema_coercions(tmp_path):
                         "bool_to_schema_int64": False,
                         "bool_to_schema_float32": False,
                         "bool_to_schema_float64": False,
+                        "bool_to_schema_str": False,
                     },
                 },
             ]
@@ -487,6 +491,7 @@ def test_schema_coercions(tmp_path):
     with fiona.open(output_file) as fds:
         assert fds.schema["properties"] == {
         "int_to_schema_float": "float",
+        "int_to_schema_str": "str",
         "int_to_schema_float64": "float",
         "int_to_schema_float32": "float",
         "str_to_schema_int32": "int32",
@@ -495,10 +500,12 @@ def test_schema_coercions(tmp_path):
         "bool_to_schema_int64": "int",
         "bool_to_schema_float32": "float",
         "bool_to_schema_float64": "float",
+        "bool_to_schema_str": "str",
     }
         layers = list(fds)
         assert layers[0]["properties"] == {
                         "int_to_schema_float": 999_999_999_999.0,
+                        "int_to_schema_str": None, # TODO val to str in schema not supported
                         "int_to_schema_float64": 999_999_999_999.0,
                         "int_to_schema_float32": 999_999_999_999.0,
                         "str_to_schema_int32": 42,
@@ -507,4 +514,5 @@ def test_schema_coercions(tmp_path):
                         "bool_to_schema_int64": 0,
                         "bool_to_schema_float32": 0.0,
                         "bool_to_schema_float64": False,
+                        "bool_to_schema_str":  None, # TODO val to str in schema not supported
                     }
