@@ -444,3 +444,67 @@ def test_schema_string_list(tmp_path):
         assert layers[0]["properties"] == {
             "time_range": ["2020-01-01", "2020-01-02"]
         }
+
+def test_schema_coercions(tmp_path):
+    output_file = tmp_path / "fio_test.geojson"
+    schema = {
+    "properties": {
+        "int_to_schema_float": "float",
+        "int_to_schema_float64": "float",
+        "int_to_schema_float32": "float",
+        "str_to_schema_int32": "int32",
+        "str_to_schema_int64": "int64",
+        "bool_to_schema_int32": "int32",
+        "bool_to_schema_int64": "int64",
+        "bool_to_schema_float32": "float32",
+        "bool_to_schema_float64": "float64",
+    },
+    "geometry": "Point",
+}
+    with fiona.open(
+        output_file, "w", driver="GeoJSON", schema=schema, crs="EPSG:4326"
+    ) as fds:
+        fds.writerecords(
+            [
+                {
+                    "id": 1,
+                    "geometry": {"type": "Point", "coordinates": [0.0, 0.0]},
+                    "properties": {
+                        "int_to_schema_float": 999_999_999_999,
+                        "int_to_schema_float64": 999_999_999_999,
+                        "int_to_schema_float32": 999_999_999_999,
+                        "str_to_schema_int32": "42",
+                        "str_to_schema_int64": "42",
+                        "bool_to_schema_int32": False,
+                        "bool_to_schema_int64": False,
+                        "bool_to_schema_float32": False,
+                        "bool_to_schema_float64": False,
+                    },
+                },
+            ]
+        )
+
+    with fiona.open(output_file) as fds:
+        assert fds.schema["properties"] == {
+        "int_to_schema_float": "float",
+        "int_to_schema_float64": "float",
+        "int_to_schema_float32": "float",
+        "str_to_schema_int32": "int32",
+        "str_to_schema_int64": "int32",
+        "bool_to_schema_int32": "int32",
+        "bool_to_schema_int64": "int32",
+        "bool_to_schema_float32": "float",
+        "bool_to_schema_float64": "float",
+    }
+        layers = list(fds)
+        assert layers[0]["properties"] == {
+                        "int_to_schema_float": 999_999_999_999.0,
+                        "int_to_schema_float64": 999_999_999_999.0,
+                        "int_to_schema_float32": 999_999_999_999.0,
+                        "str_to_schema_int32": 42,
+                        "str_to_schema_int64": 42,
+                        "bool_to_schema_int32": 0,
+                        "bool_to_schema_int64": 0,
+                        "bool_to_schema_float32": 0.0,
+                        "bool_to_schema_float64": False,
+                    }
